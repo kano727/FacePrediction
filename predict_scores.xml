@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<predictions>
+    <image name="ftw100.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw101.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw102.jpg">
+        <predicted_score>4</predicted_score>
+    </image>
+    <image name="ftw103.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw104.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw105.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw106.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw107.jpg">
+        <predicted_score>4</predicted_score>
+    </image>
+    <image name="ftw108.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw109.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw110.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw111.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw112.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw113.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw114.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw115.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw116.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+    <image name="ftw117.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw118.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw119.jpg">
+        <predicted_score>2</predicted_score>
+    </image>
+    <image name="ftw120.jpg">
+        <predicted_score>3</predicted_score>
+    </image>
+</predictions>
