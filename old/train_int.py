@@ -96,7 +96,7 @@ class CustomDataset(Dataset):
 
 
 # 设置数据路径
-data_dir = 'train_data'
+data_dir = '../train_data'
 xml_path = 'average_scores.xml'
 
 # 数据增强和预处理
@@ -130,9 +130,11 @@ class ResNet(nn.Module):
         x = self.model(x)
         return x
 
-def train_and_validate(model, train_loader, test_loader, epochs):
+def train_and_validate(model, optimizer, train_loader, test_loader, epochs):
     train_losses = []
     val_losses = []
+    # scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=11, gamma=0.5)
+    # scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
     for epoch in range(epochs):
         model.train()
@@ -158,6 +160,9 @@ def train_and_validate(model, train_loader, test_loader, epochs):
         train_loss = total_loss / len(train_loader)
         train_accuracy = total_correct / total_samples * 100
         train_losses.append(train_loss)
+        # scheduler.step()
+        # current_lr = optimizer.param_groups[0]['lr']
+        # print(f'Learning Rate: {current_lr:.6f}')
 
         # 验证模型
         model.eval()
@@ -193,11 +198,12 @@ if RETRAIN_MODEL:
     val_size = len(dataset) - train_size
     train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
 
-    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
 
     model = ResNet().to(device)
+    model.load_state_dict(torch.load('facial_attractiveness_model.pth'))
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
 
@@ -211,17 +217,30 @@ if RETRAIN_MODEL:
         param.requires_grad = True
 
     # 训练模型（前 10 个 epochs）
-    train_losses, val_losses = train_and_validate(model, train_loader, val_loader, epochs=10)
+    train_losses, val_losses = train_and_validate(model, optimizer, train_loader, val_loader, epochs=10)
 
     # 解冻所有层
     for param in model.model.parameters():
         param.requires_grad = True
 
     # 重新定义优化器
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # 继续训练（后 20 个 epochs）
-    train_losses, val_losses = train_and_validate(model, train_loader, val_loader, epochs=50)
+    # train_losses, val_losses = train_and_validate(model, optimizer, train_loader, val_loader, epochs=20)
+
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.0001)
+
+    # 冻结所有层，除了最后一层
+    for param in model.model.parameters():
+        param.requires_grad = False
+
+    # 仅对最后一层的参数进行训练
+    for param in model.model.fc.parameters():
+        param.requires_grad = True
+
+    # 训练模型（前 10 个 epochs）
+    # train_losses, val_losses = train_and_validate(model, optimizer, train_loader, val_loader, epochs=10)
 
     # 绘制损失曲线
     plt.plot(train_losses, label='Training Loss')
@@ -240,7 +259,7 @@ else:
     model.eval()
 
     # 设置预测数据路径
-    predict_dir = 'val_data'
+    predict_dir = '../val_data'
     # 创建 XML 根节点
     results = ET.Element("predictions")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
